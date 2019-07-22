@@ -3,8 +3,8 @@
 /**
  * Plugin Name:       Woodgate HOA financials 1
  * Plugin URI:        http://frasermarlow.com/HOA
- * Description:       Woodgate sales data 
- * Version:           1.0
+ * Description:       Woodgate.hoa Wordpress added shortcodes 
+ * Version:           1.1
  * Author:            Fraser Marlow
  * Author URI:        http://frasermarlow.com
  * GitHub repo:       https://github.com/frasermarlow/woodgae_hoa
@@ -98,7 +98,6 @@ function get_unit_filters() {
 
 
 /* SALES LIST FUNCTION ************************************************************/
-
 
 if (!function_exists('hoa_sales_data')) {	
 function hoa_sales_data() {
