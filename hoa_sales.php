@@ -7,6 +7,7 @@
  * Version:           1.0
  * Author:            Fraser Marlow
  * Author URI:        http://frasermarlow.com
+ * GitHub repo:       https://github.com/frasermarlow/woodgae_hoa
  */
 
 if (!function_exists('get_get_values')) {
