@@ -253,7 +253,6 @@ function hoa_add_sale(){
 	}
 }
 
-
 /* DELETE SALE FUNCTION ************************************************************/
 
 if (!function_exists('hoa_delete_sale')) {
@@ -395,7 +394,6 @@ function sort_by_unit($a,$b){
 	return ($a->unit<$b->unit)?-1:1;
 	}
 }
-
 
 if (!function_exists('include_test_chart')) {
 function include_test_chart($units = 0) {
