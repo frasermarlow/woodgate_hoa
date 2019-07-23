@@ -96,7 +96,6 @@ function get_unit_filters() {
 	}
 }
 
-
 /* SALES LIST FUNCTION ************************************************************/
 
 if (!function_exists('hoa_sales_data')) {	
@@ -281,7 +280,6 @@ function hoa_delete_sale(){
 
 /* UNIT LIST FUNCTION ************************************************************/
 
-
 if (!function_exists('hoa_units_list')) {
 function hoa_units_list() {
 
@@ -324,16 +322,13 @@ function hoa_units_list() {
 
 	/*calculate average taxes per sqrft */
 
-
 	foreach( $results as $unit) {
-
 		$sum = $sum + $unit->taxes;
 		$total_sqrft = $total_sqrft + $unit->sqft; 
 		$average_tax_per_sqft = $sum/$total_sqrft;
 	}
 
 	$output .= include_unit_filter($filter);
-
 
 	$output .= '<table id="' . $table_id . '">
 	<tr><th><a href="' . get_permalink() . '?sort=1&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Unit</a></th>
@@ -521,9 +516,6 @@ function include_test_chart($units = 0) {
 
 		}
 }
-
-
-
 
 /* Register the shortcodes and stuff with Wordpress */
 
