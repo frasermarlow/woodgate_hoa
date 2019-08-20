@@ -523,5 +523,6 @@ add_shortcode('hoa_add_sale', 'hoa_add_sale');
 add_shortcode('hoa_delete_sale', 'hoa_delete_sale');
 add_action('wp_enqueue_scripts', 'hoa_scripts');
 
+/* That's all folks! */
 
 ?>
