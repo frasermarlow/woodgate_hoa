@@ -7,7 +7,7 @@
  * Version:           1.1
  * Author:            Fraser Marlow
  * Author URI:        http://frasermarlow.com
- * GitHub repo:       https://github.com/frasermarlow/woodgae_hoa
+ * GitHub repo:       https://github.com/frasermarlow/woodgate_hoa
  */
 
 if (!function_exists('get_get_values')) {
