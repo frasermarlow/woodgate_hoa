@@ -375,7 +375,7 @@ function hoa_units_list() {
 	}
 }
 
-if (!function_exists('hoa_scipts')) {
+if (!function_exists('hoa_scripts')) {
 function hoa_scripts() {
 	wp_enqueue_script('chart.js', '//cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.bundle.min.js', array(), '8.2.0', false);
 	}
