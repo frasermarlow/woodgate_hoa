@@ -7,9 +7,15 @@
  * Version:           1.1
  * Author:            Fraser Marlow
  * Author URI:        http://frasermarlow.com
- * GitHub repo:       https://github.com/frasermarlow/woodgae_hoa
+ * GitHub repo:       https://github.com/frasermarlow/woodgate_hoa
  */
 
+ // Make sure we don't expose any info if called directly
+if ( !function_exists( 'add_action' ) ) {
+	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
+	exit;
+}
+ 
 if (!function_exists('get_get_values')) {
 function get_get_values($get) {
 	return htmlspecialchars($_GET[$get]);
@@ -375,7 +381,7 @@ function hoa_units_list() {
 	}
 }
 
-if (!function_exists('hoa_scipts')) {
+if (!function_exists('hoa_scripts')) {
 function hoa_scripts() {
 	wp_enqueue_script('chart.js', '//cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.bundle.min.js', array(), '8.2.0', false);
 	}
