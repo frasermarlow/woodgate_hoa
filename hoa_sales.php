@@ -3,19 +3,15 @@
 /**
  * Plugin Name:       Woodgate HOA financials 1
  * Plugin URI:        http://frasermarlow.com/HOA
- * Description:       Woodgate.hoa Wordpress added shortcodes 
+ * Description:       Woodgate sales data 
  * Version:           1.1
  * Author:            Fraser Marlow
  * Author URI:        http://frasermarlow.com
- * GitHub repo:       https://github.com/frasermarlow/woodgate_hoa
+ *
+ * V1.1 fixed sorting order for columns to show most recent first (line 57)
+ * V1.2 updating number formatting to be compatible with PHP 8.1 - l 154 & l 155
  */
 
- // Make sure we don't expose any info if called directly
-if ( !function_exists( 'add_action' ) ) {
-	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
-	exit;
-}
- 
 if (!function_exists('get_get_values')) {
 function get_get_values($get) {
 	return htmlspecialchars($_GET[$get]);
@@ -102,7 +98,9 @@ function get_unit_filters() {
 	}
 }
 
+
 /* SALES LIST FUNCTION ************************************************************/
+
 
 if (!function_exists('hoa_sales_data')) {	
 function hoa_sales_data() {
@@ -117,6 +115,8 @@ function hoa_sales_data() {
 	
 	// ADD: explode $filter and check that unit numbers are within range.
 	
+	if (!isset($order) || $order == "") {$sort = 3 ; $order = 2; };
+	
 	if($sort == 1) { $sort_by = " ORDER BY unit";}
 	if($sort == 2) { $sort_by = " ORDER BY type";}
 	if($sort == 3) { $sort_by = " ORDER BY transaction_date";}
@@ -129,6 +129,7 @@ function hoa_sales_data() {
 		$get_units = " WHERE unit in (" . $unit_filter . ")";
 		$unit_cgi = "&unit=".$unit_filter;
 		}
+	
 	$sql = "select * from hoa_sales" . $get_units . $sort_by . $order_by;
 	$results = $wpdb->get_results($sql);
 	$full_results = calculate_appreciation();
@@ -139,18 +140,19 @@ function hoa_sales_data() {
 	$output .= include_test_chart($unit_filter);
 	$output .= "<hr/>";		
 	$output .= '<table class="hoa" id="' . $table_id . '">
-  <tr><th><a href="' . get_permalink() . '?sort=1&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Unit</a></th>
-    <th><a href="' . get_permalink() . '?sort=3&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Transaction Date</a></th>
-    <th><a href="' . get_permalink() . '?sort=4&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Price</a></th>
-    <th style="font-size: 0.7em;"><a href="' . get_permalink() . '?sort=5&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Realtor</a></th>
+    <tr><th><a href="' . get_permalink() . '?sort=1&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Unit</a></th>
+        <th><a href="' . get_permalink() . '?sort=3&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Transaction Date</a></th>
+        <th><a href="' . get_permalink() . '?sort=4&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Price</a></th>
+        <th style="font-size: 0.7em;"><a href="' . get_permalink() . '?sort=5&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Realtor</a></th>
 	<th style="font-size: 0.7em;">Annual price change</th>
 	<th style="font-size: 0.7em;">Years between transactions</th>
 	<th style="font-size: 0.7em;">Change in value</th>
 	<th style="font-size: 0.7em;">Increase in value</th>
 	<th style="font-size: 0.7em;"><a href="' . get_permalink() . '?sort=2&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Type</a></th></tr>';
 
-	foreach( $results as $user_data) {
-	$price = money_format('%.0n',$user_data->sale_price);
+	foreach($results as $user_data) {
+	$formatter = new NumberFormatter('en_US', NumberFormatter::CURRENCY);
+	$price = $formatter->formatCurrency($user_data->sale_price, 'USD');
 
 	/* supplement array with transaction data calculations */
 
@@ -176,7 +178,7 @@ function hoa_sales_data() {
 	<td style=\"font-size: 0.7em;\">$user_data->increase_in_value</td>
 	<td style=\"font-size: 0.7em;\">$user_data->increase_as_percentage</td>
 	<td style=\"font-size: 0.7em;\">$user_data->type</td>
-  </tr>";
+    </tr>";
 	}
 	$output .= '</table>';
 	
@@ -259,6 +261,8 @@ function hoa_add_sale(){
 	}
 }
 
+
+
 /* DELETE SALE FUNCTION ************************************************************/
 
 if (!function_exists('hoa_delete_sale')) {
@@ -284,6 +288,8 @@ function hoa_delete_sale(){
 }
 
 /* UNIT LIST FUNCTION ************************************************************/
+
+
 
 if (!function_exists('hoa_units_list')) {
 function hoa_units_list() {
@@ -327,13 +333,16 @@ function hoa_units_list() {
 
 	/*calculate average taxes per sqrft */
 
+
 	foreach( $results as $unit) {
+
 		$sum = $sum + $unit->taxes;
 		$total_sqrft = $total_sqrft + $unit->sqft; 
 		$average_tax_per_sqft = $sum/$total_sqrft;
 	}
 
 	$output .= include_unit_filter($filter);
+
 
 	$output .= '<table id="' . $table_id . '">
 	<tr><th><a href="' . get_permalink() . '?sort=1&order=' . $flip_sort_order . $unit_cgi . '#' . $table_id . '">Unit</a></th>
@@ -381,7 +390,7 @@ function hoa_units_list() {
 	}
 }
 
-if (!function_exists('hoa_scripts')) {
+if (!function_exists('hoa_scipts')) {
 function hoa_scripts() {
 	wp_enqueue_script('chart.js', '//cdn.jsdelivr.net/npm/chart.js@2.8.0/dist/Chart.bundle.min.js', array(), '8.2.0', false);
 	}
@@ -400,6 +409,7 @@ function sort_by_unit($a,$b){
 	return ($a->unit<$b->unit)?-1:1;
 	}
 }
+
 
 if (!function_exists('include_test_chart')) {
 function include_test_chart($units = 0) {
@@ -521,6 +531,7 @@ function include_test_chart($units = 0) {
 		}
 }
 
+
 /* Register the shortcodes and stuff with Wordpress */
 
 add_shortcode('hoa_sales_data', 'hoa_sales_data');
@@ -528,5 +539,5 @@ add_shortcode('hoa_units_list', 'hoa_units_list');
 add_shortcode('hoa_add_sale', 'hoa_add_sale');
 add_shortcode('hoa_delete_sale', 'hoa_delete_sale');
 add_action('wp_enqueue_scripts', 'hoa_scripts');
-/* That's all folks! */
+
 ?>
